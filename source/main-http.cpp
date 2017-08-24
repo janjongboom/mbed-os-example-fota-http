@@ -49,6 +49,8 @@ void check_for_update() {
 
     delete req;
 
+    printf("Rebooting...\n\n");
+
     NVIC_SystemReset();
 }
 
