@@ -1,0 +1,11 @@
+.mbed
+.vscode/
+mbed_settings.*
+BUILD/
+.build/
+.hgignore
+sd-driver/
+mbed-os/
+easy-connect/
+mbed-http/
+

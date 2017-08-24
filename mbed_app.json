@@ -1,0 +1,89 @@
+{
+    "config": {
+        "network-interface": {
+            "help": "options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, WIFI_RTW, MESH_LOWPAN_ND, MESH_THREAD",
+            "value": "WIFI_ODIN"
+        },
+        "mesh_radio_type": {
+        	"help": "options are ATMEL, MCR20, SPIRIT1, EFR32",
+        	"value": "ATMEL"
+        },
+        "esp8266-tx": {
+            "help": "Pin used as TX (connects to ESP8266 RX)",
+            "value": "D1"
+        },
+        "esp8266-rx": {
+            "help": "Pin used as RX (connects to ESP8266 TX)",
+            "value": "D0"
+        },
+        "esp8266-debug": {
+            "value": false
+        },
+        "wifi-ssid": {
+            "value": "\"mbed\""
+        },
+        "wifi-password": {
+            "value": "\"mbed2014\""
+        },
+
+        "update_file": {
+            "help": "Path to the application update binary on the SD card",
+            "value": "\"mbed-os-example-blinky_application.bin\""
+        },
+        "sd_card_mosi": {
+            "help": "MCU pin connected to the SD card's SPI MOSI pin",
+            "value": "D11"
+        },
+        "sd_card_miso": {
+            "help": "MCU pin connected to the SD card's SPI MISO pin",
+            "value": "D12"
+        },
+        "sd_card_sck": {
+            "help": "MCU pin connected to the SD card's SPI SCK pin",
+            "value": "D13"
+        },
+        "sd_card_cs": {
+            "help": "MCU pin connected to the SD card's SPI CS pin",
+            "value": "D10"
+        }
+    },
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_entropy_config.h\"",
+               "MBEDTLS_TEST_NULL_ENTROPY", "MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES" ],
+    "target_overrides": {
+        "*": {
+            "target.features_add": ["NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
+            "mbed-mesh-api.6lowpan-nd-channel-page": 0,
+            "mbed-mesh-api.6lowpan-nd-channel": 12,
+            "mbed-trace.enable": 0,
+            "mbed-http.http-buffer-size": 2048
+        },
+        "HEXIWEAR": {
+            "esp8266-tx": "PTD3",
+            "esp8266-rx": "PTD2"
+        },
+        "NUCLEO_F401RE": {
+            "esp8266-tx": "D8",
+            "esp8266-rx": "D2"
+        },
+        "NUCLEO_F411RE": {
+            "esp8266-tx": "D8",
+            "esp8266-rx": "D2"
+        },
+        "K64F": {
+            "target.bootloader_img": "bootloader/K64F.bin",
+            "sd_card_mosi": "PTE3",
+            "sd_card_miso": "PTE1",
+            "sd_card_sck": "PTE2",
+            "sd_card_cs": "PTE4"
+        },
+        "NUCLEO_F429ZI": {
+            "esp8266-tx": "D8",
+            "esp8266-rx": "D2",
+            "target.bootloader_img": "bootloader/NUCLEO_F429ZI.bin"
+        },
+        "UBLOX_EVK_ODIN_W2": {
+            "target.bootloader_img": "bootloader/UBLOX_EVK_ODIN_W2.bin",
+            "sd_card_cs": "D9"
+        }
+    }
+}
