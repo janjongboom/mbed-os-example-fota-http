@@ -48,6 +48,8 @@ void check_for_update() {
     fclose(file);
 
     delete req;
+
+    NVIC_SystemReset();
 }
 
 DigitalOut led(LED1);
