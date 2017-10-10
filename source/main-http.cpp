@@ -13,6 +13,10 @@
 #define DIFF_SOURCE_FILE_PATH   "/" SD_MOUNT_PATH "/" MBED_CONF_APP_UPDATE_FILE ".source"
 #define DIFF_UPDATE_FILE_PATH   "/" SD_MOUNT_PATH "/" MBED_CONF_APP_UPDATE_FILE ".update"
 
+void patch_progress(uint8_t pct) {
+    printf("Patch progress: %d%%\n", pct);
+}
+
 //Pin order: MOSI, MISO, SCK, CS
 SDBlockDevice sd(MBED_CONF_APP_SD_CARD_MOSI, MBED_CONF_APP_SD_CARD_MISO,
                  MBED_CONF_APP_SD_CARD_SCK, MBED_CONF_APP_SD_CARD_CS);
@@ -60,25 +64,32 @@ void check_for_update() {
     FILE *diff = fopen(FULL_UPDATE_FILE_PATH, "rb");
     FILE *target = fopen(DIFF_UPDATE_FILE_PATH, "wb");
 
-    // fread/fwrite buffer, minimum size is 1 byte
-    char* buffer = (char*)malloc(16 * 1024);
+    // fread/fwrite buffers, minimum size is 1 byte
+    unsigned char* source_buffer = (unsigned char*)malloc(8 * 1024);
+    unsigned char* diff_buffer   = (unsigned char*)malloc(8 * 1024);
+    unsigned char* target_buffer = (unsigned char*)malloc(8 * 1024);
 
     janpatch_ctx ctx = {
         // provide buffers
-        buffer,
-        16 * 1024,
+        { source_buffer, 8 * 1024 },
+        { diff_buffer,   8 * 1024 },
+        { target_buffer, 8 * 1024 },
 
         // define functions which can perform basic IO
         // on POSIX, use:
-        &getc,
-        &putc,
         &fread,
         &fwrite,
         &fseek,
-        &ftell
+        &ftell,
+
+        &patch_progress
     };
     int r = janpatch(ctx, source, diff, target);
     printf("janpatch returned %d\n", r);
+
+    free(source_buffer);
+    free(diff_buffer);
+    free(target_buffer);
 
     fclose(source);
     fclose(diff);
